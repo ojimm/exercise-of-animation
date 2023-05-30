@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>three-demo1</title>
+  </head>
+  <body>
+    <!-- 1.容器 -->
+    <div id="canvasBox"></div>
+
+    <!-- 引入Threejs 这里script使用module类型 -->
+    <script type="module">
+      import * as THREE from "../three.js-master/src/Three.js";
+      import {
+        Scene, //场景
+        PerspectiveCamera, // 相机
+        WebGLRenderer, // 渲染器
+        // 下面3个都是创建“物体”需要的要素
+        SphereGeometry,
+        BoxGeometry, // 立方缓冲几何体
+        MeshToonMaterial, // 卡通着色材质
+        Mesh,
+        PointLight, // 点光源
+        AxesHelper, // 辅助坐标轴
+      } from "../three.js-master/src/Three.js";
+
+      // 2.场景对象
+      // 场景是一个容器，用于保存跟踪所有渲染物体和使用的光源
+      // 没有场景就无法渲染任何东西
+      const scene = new Scene();
+      scene.background = new THREE.Color(0x444488);
+
+      // 3.透视相机
+      // 摄像机决定了能够在场景中看到什么
+      // 我们基于摄像机的角度来计算场景对象在浏览器当中渲染成什么样子
+      // 第一个参数：视野角度（FOV）。视野角度就是无论在什么时候，你能在显示器上看到的场景范围，他的单位是角度.
+      // 第二个参数： 宽高比
+      // 第三个参数： 近截面（near）
+      // 第四个参数： 远截面（far）
+      const camera = new PerspectiveCamera(
+        124,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+
+      const z = 10;
+      // 设置摄像机在xyz轴的坐标
+      camera.position.set(
+        Math.cos(Math.PI / 4) * z,
+        Math.sin(Math.PI / 4) * z,
+        // 0,
+        // 0,
+        z
+      );
+
+      camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+      // 4.创建一个立方几何体
+      // const geometry = new THREE.SphereGeometry(6, 23, 15);
+      const geometry = new BoxGeometry(6, 6, 6);
+      const cubeEdges = new THREE.EdgesGeometry(geometry, 1);
+      const cubeLine = new THREE.LineSegments(
+        cubeEdges,
+        new THREE.LineBasicMaterial({
+          color: 0xffffff,
+        })
+      );
+      // 材质
+      const material = new MeshToonMaterial({ color: "#049ef4" });
+      // 组合立方几何体和材质，创建出一个新的网格对象
+      const cube = new Mesh(geometry, material);
+      cube.add(cubeLine);
+      // 将立方体网格追加到场景中
+      scene.add(cube);
+
+      // 光源
+      let particleLight = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 10, 15),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+      );
+      particleLight.position.set(0, 0, 13);
+      scene.add(particleLight);
+      let pointLight = new PointLight(0xffffff, 1.1, 0);
+      particleLight.add(pointLight);
+
+      // 添加到辅助坐标轴
+      const axesHelper = new AxesHelper(100);
+      axesHelper.setColors("pink", 0xf0ff00, "rgb(60, 200, 130)");
+      scene.add(axesHelper);
+
+      // 5.创建渲染器
+      const renderer = new WebGLRenderer({ antialias: true });
+      // 设置渲染器的大小
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      // 将渲染器添加到div中
+      document.getElementById("canvasBox").appendChild(renderer.domElement);
+
+      // 6.通过修改 cube 的 rotation 的属性，改变立方体的角度。最后再不断刷新画布做出动画效果。
+      function animate() {
+        requestAnimationFrame(animate);
+
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        // 将场景和摄像机传入到渲染器中
+        renderer.render(scene, camera);
+      }
+
+      // 执行动画函数
+      animate();
+    </script>
+  </body>
+</html>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+</style>
