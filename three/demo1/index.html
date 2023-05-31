@@ -30,7 +30,7 @@
       // 场景是一个容器，用于保存跟踪所有渲染物体和使用的光源
       // 没有场景就无法渲染任何东西
       const scene = new Scene();
-      scene.background = new THREE.Color(0x444488);
+      scene.background = new THREE.Color(0x2b2b2b);
 
       // 3.透视相机
       // 摄像机决定了能够在场景中看到什么
@@ -76,7 +76,7 @@
       // 将立方体网格追加到场景中
       scene.add(cube);
 
-      // 光源
+      // 5.添加点光源
       let particleLight = new THREE.Mesh(
         new THREE.SphereGeometry(0.1, 10, 15),
         new THREE.MeshBasicMaterial({ color: 0xffffff })
@@ -88,17 +88,16 @@
 
       // 添加到辅助坐标轴
       const axesHelper = new AxesHelper(100);
-      axesHelper.setColors("pink", 0xf0ff00, "rgb(60, 200, 130)");
       scene.add(axesHelper);
 
-      // 5.创建渲染器
+      // 6.创建渲染器
       const renderer = new WebGLRenderer({ antialias: true });
       // 设置渲染器的大小
       renderer.setSize(window.innerWidth, window.innerHeight);
       // 将渲染器添加到div中
       document.getElementById("canvasBox").appendChild(renderer.domElement);
 
-      // 6.通过修改 cube 的 rotation 的属性，改变立方体的角度。最后再不断刷新画布做出动画效果。
+      // 7.通过修改 cube 的 rotation 的属性，改变立方体的角度。最后再不断刷新画布做出动画效果。
       function animate() {
         requestAnimationFrame(animate);
 
